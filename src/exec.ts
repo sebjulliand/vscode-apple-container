@@ -53,7 +53,7 @@ export function execList<T>(command: string, transformer?: (key: string, stringV
   const output = exec(command).split("\n").filter(Boolean);
   const headerLine = output.shift();
   if (headerLine) {
-    const headers = headerLine.split(/\s\s\s+/)
+    const headers = headerLine.split(/\s\s+/)
       .map((header, index, list) => ({
         label: camelize(header),
         start: index ? headerLine.indexOf(`${header}`) : 0,
