@@ -1,0 +1,48 @@
+{
+  "name": "vscode-apple-container",
+  "publisher": "sebjulliand",
+  "displayName": "Apple Container",
+  "description": "Manage Apple Container from VS Code",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.103.x"
+  },
+  "extensionDependencies": [],
+  "license": "MIT",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "l10n": "./l10n",
+  "contributes": {
+    "commands": [
+      {
+        "command": "template.helloWorld",
+        "title": "%hello.world%"
+      }
+    ]
+  },
+  "scripts": {
+    "nls": "npx @vscode/l10n-dev export --outDir ./l10n ./src",
+    "build": "webpack --mode development",
+    "watch": "webpack --mode development --watch",
+    "vscode:prepublish": "webpack --mode production --devtool hidden-source-map",
+    "package": "npx @vscode/vsce package --pre-release"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/vscode": "1.103",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "esbuild-loader": "4.3.0",
+    "typescript": "5.9.2",
+    "webpack": "5.101.3",
+    "webpack-cli": "6.0.1"
+  },
+  "dependencies": {
+    "@vscode-elements/elements": "^2.3.1"
+  }
+}
