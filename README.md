@@ -1,2 +1,2 @@
-# VSCode Template extension
-This is my template to create a VScode extension
+# Apple Container VS Code extension
+Manage Apple Container from VS Code
