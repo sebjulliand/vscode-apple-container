@@ -23,7 +23,30 @@
         "command": "template.helloWorld",
         "title": "%hello.world%"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "icon": "icons/mac-dock.svg",
+          "id": "apple-container",
+          "title": "Apple Container"
+        }
+      ]
+    },
+    "views": {
+      "apple-container": [
+        {
+          "id": "apple-ontainer.images",
+          "name": "%images%",
+          "icon": ""
+        },
+        {
+          "id": "apple-ontainer.containers",
+          "name": "%containers%",
+          "icon": ""
+        }
+      ]
+    }
   },
   "scripts": {
     "nls": "npx @vscode/l10n-dev export --outDir ./l10n ./src",
