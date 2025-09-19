@@ -1,5 +1,6 @@
 {
   "containers": "Containers",
   "hello.world": "Hello World",
-  "images": "Images"
+  "images": "Images",
+  "system": "system"
 }
