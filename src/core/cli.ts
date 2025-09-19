@@ -98,8 +98,20 @@ export namespace CLI {
 }
 
 export namespace ContainerCLI {
-  export function version(){
+  function exec(args: string) {
+    return CLI.exec(`container ${args}`);
+  }
+
+  export function execAndList<T>(args: string, transformer?: (key: string, stringValue: string) => any) {
+    return CLI.execAndList<T>(`container ${args}`, transformer);
+  }
+
+  export function version() {
     return CLI.exec("container --version");
+  }
+
+  export function status() {
+    return CLI.exec("container system status");
   }
 }
 
