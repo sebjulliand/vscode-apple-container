@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Exec } from './core/exec';
+import { ContainerCLI } from './core/cli';
 import { initializeSystemView } from './system/view';
 
 let extensionId = "";
@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
 		(output = vscode.window.createOutputChannel("Apple Container", "log"))
 	);
 
-	const version = Exec.run("contsainer --version");
+	const version = ContainerCLI.version();
 	output.appendLine(version.error || version.output);
 	const installed = version.code === 0;
 	if (installed) {

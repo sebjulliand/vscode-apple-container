@@ -8,7 +8,7 @@ type ExecResult = {
   error?: string
 };
 
-export namespace Exec {
+export namespace CLI {
   /**
    * Runs a command and return the standard output as an UTF-8 string.
    * Throws an error if the command fails.
@@ -16,7 +16,7 @@ export namespace Exec {
    * @param command The command to run, with space-separated arguments.
    * @returns the standard output
    */
-  export function run(command: string): ExecResult {
+  export function exec(command: string): ExecResult {
     try {
       return { code: 0, output: execSync(command).toString("utf-8") };
     }
@@ -65,8 +65,8 @@ export namespace Exec {
    * @param transformer an optional function that can transform a value depending on the value's key
    * @returns an array of `T`
    */
-  export function runList<T>(command: string, transformer?: (key: string, stringValue: string) => any): T[] {
-    const execResult = run(command);
+  export function execAndList<T>(command: string, transformer?: (key: string, stringValue: string) => any): T[] {
+    const execResult = exec(command);
     const output = execResult.output.split("\n").filter(Boolean);
     const headerLine = output.shift();
     if (headerLine) {
@@ -95,13 +95,19 @@ export namespace Exec {
     }
 
   }
+}
 
-  function camelize(name: string) {
-    //https://stackoverflow.com/questions/2970525/converting-a-string-with-spaces-into-camel-case
-    return name.toLocaleLowerCase().replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, idx) => idx === 0 ? ltr.toLowerCase() : ltr.toUpperCase()).replace(/\s+/g, '');
+export namespace ContainerCLI {
+  export function version(){
+    return CLI.exec("container --version");
   }
+}
 
-  function isExecError(error: any): error is SpawnSyncReturns<Buffer> {
-    return error && error.pid && error.stdout;
-  }
+function camelize(name: string) {
+  //https://stackoverflow.com/questions/2970525/converting-a-string-with-spaces-into-camel-case
+  return name.toLocaleLowerCase().replace(/(?:^\w|[A-Z]|\b\w)/g, (ltr, idx) => idx === 0 ? ltr.toLowerCase() : ltr.toUpperCase()).replace(/\s+/g, '');
+}
+
+function isExecError(error: any): error is SpawnSyncReturns<Buffer> {
+  return error && error.pid && error.stdout;
 }
