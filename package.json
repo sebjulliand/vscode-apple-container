@@ -4,6 +4,14 @@
   "displayName": "Apple Container",
   "description": "Manage Apple Container from VS Code",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sebjulliand/vscode-apple-container"
+  },
+  "author": {
+    "name": "Sébastien Julliand",
+    "url": "https://github.com/sebjulliand"
+  },
   "engines": {
     "vscode": "^1.103.x"
   },
