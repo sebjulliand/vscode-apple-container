@@ -8,4 +8,13 @@ export type ContainerImage = {
   size: string
   created: string
   manifestDigest: string
-};
+}
+
+export type Container = {
+  id: string
+  image: string
+  os: string
+  arch: string
+  state: string
+  addr: string
+}

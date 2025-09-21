@@ -45,7 +45,8 @@ class SystemView extends NodeView {
       const status = ContainerCLI.status();
       setVSCodeContext('apple-container.running', status.succesful);
       return [
-        new StatusNode(status.succesful, status.error || status.output)
+        new StatusNode(status.succesful, status.error || status.output),
+        new DNSDomainsNode()
       ];
     }
     else {
@@ -57,12 +58,36 @@ class SystemView extends NodeView {
 class StatusNode extends Node {
   constructor(running: boolean, tooltip: string) {
     super(l10n.t('Status'), {
-      state: vscode.TreeItemCollapsibleState.None,
       icon: running ? 'pass' : 'error',
       color: running ? "testing.iconPassed" : "testing.iconFailed"
     });
     this.contextValue = `apple-container.statusNode.${running ? 'running' : 'stopped'}`;
     this.description = running ? l10n.t("Running") : l10n.t("Stopped");
     this.tooltip = tooltip;
+  }
+}
+
+class DNSDomainsNode extends Node {
+  constructor() {
+    super(l10n.t('DNS domains'), { icon: 'globe', state: vscode.TreeItemCollapsibleState.Collapsed });
+    this.contextValue = 'apple-container.dnsDomainsNode';
+  }
+
+  getChildren() {
+    const dnsList = ContainerCLI.listDNS();
+    if (dnsList.succesful) {
+      return dnsList.output
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(dns => new DNSNode(dns));
+    }
+  }
+}
+
+class DNSNode extends Node {
+  constructor(dns: string) {
+    super(dns);
+    this.contextValue = 'apple-container.dnsNode';
   }
 }

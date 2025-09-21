@@ -63,10 +63,7 @@ class ImagesView extends NodeView {
 
 class ImageNode extends Node {
   constructor(readonly image: ContainerImage) {
-    super(image.name, {
-      state: vscode.TreeItemCollapsibleState.None,
-      icon: 'file-binary'
-    });
+    super(image.name, { icon: 'file-binary' });
     this.contextValue = `apple-container.imageNode`;
     this.description = image.tag;
     this.tooltip = image.size;

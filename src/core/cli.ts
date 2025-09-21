@@ -1,7 +1,7 @@
 import { execSync, SpawnSyncReturns } from "child_process";
 import { l10n } from "vscode";
 import { Output } from "../extension";
-import { ContainerImage } from "../types";
+import { Container, ContainerImage } from "../types";
 import { fullImageName } from "./utils";
 
 type ExecResult = {
@@ -116,6 +116,10 @@ export namespace ContainerCLI {
     return exec("system status");
   }
 
+  export function listDNS() {
+    return exec("system dns list");
+  }
+
   export function startService() {
     return exec("system start");
   }
@@ -138,6 +142,10 @@ export namespace ContainerCLI {
 
   export function deleteImage(image: ContainerImage) {
     return exec(`images delete ${fullImageName(image)}`);
+  }
+
+  export function listContainers() {
+    return execAndList<Container>("ls --all");
   }
 }
 
