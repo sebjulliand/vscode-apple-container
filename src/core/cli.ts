@@ -120,6 +120,10 @@ export namespace ContainerCLI {
     return exec("system dns list");
   }
 
+  export function getDefaultDNS() {
+    return exec("system dns default inspect");
+  }
+
   export function startService() {
     return exec("system start");
   }

@@ -76,18 +76,19 @@ class DNSDomainsNode extends Node {
   getChildren() {
     const dnsList = ContainerCLI.listDNS();
     if (dnsList.succesful) {
+      const defaultDNS = ContainerCLI.getDefaultDNS().output.trim();
       return dnsList.output
         .split('\n')
         .map(line => line.trim())
         .filter(Boolean)
-        .map(dns => new DNSNode(dns));
+        .map(dns => new DNSNode(dns, dns === defaultDNS));
     }
   }
 }
 
 class DNSNode extends Node {
-  constructor(dns: string) {
-    super(dns);
+  constructor(dns: string, isDefault: boolean) {
+    super(dns, { icon: isDefault ? 'star' : undefined, color: isDefault ? 'charts.yellow' : undefined });
     this.contextValue = 'apple-container.dnsNode';
   }
 }
