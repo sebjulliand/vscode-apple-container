@@ -2,6 +2,7 @@ import { execSync, SpawnSyncReturns } from "child_process";
 import { l10n } from "vscode";
 import { Output } from "../extension";
 import { ContainerImage } from "../types";
+import { fullImageName } from "./utils";
 
 type ExecResult = {
   succesful: boolean
@@ -147,8 +148,4 @@ function camelize(name: string) {
 
 function isExecError(error: any): error is SpawnSyncReturns<Buffer> {
   return error && error.pid && error.stdout;
-}
-
-function fullImageName(image: ContainerImage) {
-  return `${image.name}${image.tag ? ':' + image.tag : ''}`;
 }

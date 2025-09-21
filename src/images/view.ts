@@ -1,6 +1,7 @@
 import vscode, { l10n } from "vscode";
 import { ContainerCLI } from "../core/cli";
 import { Node, NodeView } from "../core/nodeview";
+import { fullImageName } from "../core/utils";
 import { ContainerImage } from "../types";
 
 export function initializeImagesView(context: vscode.ExtensionContext) {
@@ -9,6 +10,7 @@ export function initializeImagesView(context: vscode.ExtensionContext) {
     `apple-container.images`, {
     treeDataProvider: imagesView,
     showCollapseAll: true,
+    canSelectMany: true
   });
 
   imagesTreeView.badge = { tooltip: '', value: 3 };
@@ -30,15 +32,24 @@ export function initializeImagesView(context: vscode.ExtensionContext) {
         }
       }
     }),
-    vscode.commands.registerCommand("apple-container.images.delete", async (node: ImageNode) => {
-      if (await vscode.window.showInformationMessage(l10n.t(`Are you sure you want to delete image {0}:{1}?`, node.image.name, node.image.tag), { modal: true }, l10n.t('Yes'))) {
-        const result = ContainerCLI.deleteImage(node.image);
-        if (result.succesful) {
-          imagesView.refresh();
-        }
-        else {
-          vscode.window.showErrorMessage(l10n.t('Failed to delete image: {0}', result.error || result.output));
-        }
+    vscode.commands.registerCommand("apple-container.images.delete", async (node: ImageNode, nodes?: ImageNode[]) => {
+      const images = (nodes || [node]).map(n => n.image);
+      const detail = images.map(image => `- ${fullImageName(image)}`).join('\n');
+      if (await vscode.window.showInformationMessage(l10n.t(`Are you sure you want to delete the selected image(s)?`), { modal: true, detail }, l10n.t('Yes'))) {
+        vscode.window.withProgress({ title: l10n.t('Deleting container image'), location: vscode.ProgressLocation.Notification }, async (task) => {
+          const increment = 100 / images.length;
+          for (const image of images) {
+            task.report({ message: fullImageName(image) });
+            const result = ContainerCLI.deleteImage(image);
+            if (result.succesful) {
+              imagesView.refresh();
+            }
+            else {
+              vscode.window.showErrorMessage(l10n.t('Failed to delete image: {0}', result.error || result.output));
+            }
+            task.report({ message: fullImageName(image), increment });
+          }
+        });
       }
     })
   );
