@@ -124,6 +124,14 @@ export namespace ContainerCLI {
     return exec("system dns default inspect");
   }
 
+  export function setDefaultDNS(dns: string) {
+    return exec(`system dns default set ${dns}`);
+  }
+
+  export function cleqrDefaultDNS() {
+    return exec(`system dns default clear`);
+  }
+
   export function startService() {
     return exec("system start");
   }
