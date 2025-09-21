@@ -21,11 +21,9 @@ export namespace CLI {
       return { code: 0, output: execSync(command).toString("utf-8") };
     }
     catch (err: any) {
-      let code = -666;
       let error;
-      let output;
       if (isExecError(err)) {
-        Output.appendLine(l10n.t("Failed to run {0}:[{1}] {2}", command, err.status || "?", err.stderr.toString("utf-8")));
+        Output.appendLine(l10n.t("'{0}' failed: [{1}] {2}", command, err.status || "?", err.stderr.toString("utf-8")));
 
         return {
           code: err.status || -666,
@@ -34,7 +32,7 @@ export namespace CLI {
         };
       }
       else {
-        Output.appendLineAndThrow(l10n.t("Failed to run {0}: {1}", command, typeof error === "string" ? error : JSON.stringify(error)));
+        Output.appendLineAndThrow(l10n.t("'{0}' failed: {1}", command, typeof err === "string" ? err : JSON.stringify(err)));
       };
     }
   }
@@ -112,6 +110,14 @@ export namespace ContainerCLI {
 
   export function status() {
     return CLI.exec("container system status");
+  }
+
+  export function startService() {
+    return CLI.exec("container system start");
+  }
+
+  export function stopService() {
+    return CLI.exec("container system stop");
   }
 }
 

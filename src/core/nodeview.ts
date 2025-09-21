@@ -24,6 +24,7 @@ export class Node extends vscode.TreeItem {
 
 export abstract class NodeView implements vscode.TreeDataProvider<Node> {
   private readonly emitter = new vscode.EventEmitter<Node | undefined | null | void>;
+  readonly onDidChangeTreeData: vscode.Event<Node | undefined | null | void> = this.emitter.event;
 
   getTreeItem(element: Node) {
     return element;

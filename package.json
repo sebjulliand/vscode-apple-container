@@ -28,10 +28,42 @@
   "contributes": {
     "commands": [
       {
-        "command": "template.helloWorld",
-        "title": "%hello.world%"
+        "command": "apple-container.startService",
+        "title": "%start.service%",
+				"icon": "$(debug-start)",
+        "category": "Apple Container"
+      },
+      {
+        "command": "apple-container.stopService",
+        "title": "%stop.service%",
+				"icon": "$(debug-stop)",
+        "category": "Apple Container"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "apple-container.startService",
+          "when": "never"
+        },
+        {
+          "command": "apple-container.stopService",
+          "when": "never"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "apple-container.startService",
+          "when": "view === apple-container.system && viewItem === apple-container.statusNode.stopped",
+          "group": "inline"
+        },
+        {
+          "command": "apple-container.stopService",
+          "when": "view === apple-container.system && viewItem === apple-container.statusNode.running",
+          "group": "inline"
+        }
+      ]
+    },
     "viewsContainers": {
       "activitybar": [
         {

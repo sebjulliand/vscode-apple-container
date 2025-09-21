@@ -14,7 +14,27 @@ export function initializeSystemView(context: vscode.ExtensionContext) {
   systemTreeView.description = l10n.t('Version {0}', getContainerVersion());
 
   context.subscriptions.push(
-    systemTreeView
+    systemTreeView,
+    vscode.commands.registerCommand("apple-container.startService", () => {
+      const start = ContainerCLI.startService();
+      if (start.code === 0) {
+        vscode.window.showInformationMessage(l10n.t('Apple Container service successfully started.'));
+      }
+      else {
+        vscode.window.showErrorMessage(l10n.t('Failed to start Apple Container service: {0)', start.error || start.output));
+      }
+      systemView.refresh();
+    }),
+    vscode.commands.registerCommand("apple-container.stopService", () => {
+      const stop = ContainerCLI.stopService();
+      if (stop.code === 0) {
+        vscode.window.showInformationMessage(l10n.t('Apple Container service successfully stopped.'));
+      }
+      else {
+        vscode.window.showErrorMessage(l10n.t('Failed to stop Apple Container service: {0)', stop.error || stop.output));
+      }
+      systemView.refresh();
+    })
   );
 }
 
@@ -32,14 +52,16 @@ class SystemView extends NodeView {
 }
 
 class StatusNode extends Node {
-  constructor(){
+  constructor() {
     const result = ContainerCLI.status();
     const running = result.code === 0;
-    super(l10n.t('Status'), { 
+    super(l10n.t('Status'), {
       state: vscode.TreeItemCollapsibleState.None,
-     });
-     this.contextValue = 'apple-container.statusNode';
-     this.description = running ? l10n.t("Running") : l10n.t("Stopped");
-     this.tooltip = result.output;
+      icon: running ? 'pass' : 'error',
+      color: running ? "testing.iconPassed" : "testing.iconFailed"
+    });
+    this.contextValue = `apple-container.statusNode.${running ? 'running' : 'stopped'}`;
+    this.description = running ? l10n.t("Running") : l10n.t("Stopped");
+    this.tooltip = result.output;
   }
 }

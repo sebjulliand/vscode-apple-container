@@ -1,6 +1,7 @@
 {
   "containers": "Containers",
-  "hello.world": "Hello World",
+  "start.service" : "Start service",
+  "stop.service" : "Stop service",
   "images": "Images",
   "system": "system"
 }
