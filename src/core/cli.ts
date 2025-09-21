@@ -1,11 +1,13 @@
 import { execSync, SpawnSyncReturns } from "child_process";
 import { l10n } from "vscode";
 import { Output } from "../extension";
+import { ContainerImage } from "../types";
 
 type ExecResult = {
+  succesful: boolean
   code: number
   output: string
-  error?: string
+  error: string
 };
 
 export namespace CLI {
@@ -18,7 +20,7 @@ export namespace CLI {
    */
   export function exec(command: string): ExecResult {
     try {
-      return { code: 0, output: execSync(command).toString("utf-8") };
+      return { code: 0, succesful: true, output: execSync(command).toString("utf-8"), error: '' };
     }
     catch (err: any) {
       let error;
@@ -26,13 +28,14 @@ export namespace CLI {
         Output.appendLine(l10n.t("'{0}' failed: [{1}] {2}", command, err.status || "?", err.stderr.toString("utf-8")));
 
         return {
+          succesful: false,
           code: err.status || -666,
           output: err.stdout.toString("utf-8"),
           error: err.stderr.toString("utf-8")
         };
       }
       else {
-        Output.appendLineAndThrow(l10n.t("'{0}' failed: {1}", command, typeof err === "string" ? err : JSON.stringify(err)));
+        Output.appendErrorAndThrow(l10n.t("'{0}' failed: {1}", command, typeof err === "string" ? err : JSON.stringify(err)));
       };
     }
   }
@@ -83,11 +86,11 @@ export namespace CLI {
       }, {} as Record<string, any>)) as T[];
     }
     else {
-      if (execResult.code === 0) {
-        Output.appendLineAndThrow(l10n.t("Command {0} is not a list command", command));
+      if (execResult.succesful) {
+        Output.appendErrorAndThrow(l10n.t("Command {0} is not a list command", command));
       }
       else {
-        Output.appendLineAndThrow(l10n.t("Command {0} failed: (1}", command, execResult.error || execResult.output));
+        Output.appendErrorAndThrow(l10n.t("Command {0} failed: (1}", command, execResult.error || execResult.output));
 
       }
     }
@@ -100,24 +103,40 @@ export namespace ContainerCLI {
     return CLI.exec(`container ${args}`);
   }
 
-  export function execAndList<T>(args: string, transformer?: (key: string, stringValue: string) => any) {
+  function execAndList<T>(args: string, transformer?: (key: string, stringValue: string) => any) {
     return CLI.execAndList<T>(`container ${args}`, transformer);
   }
 
   export function version() {
-    return CLI.exec("container --version");
+    return exec("--version");
   }
 
   export function status() {
-    return CLI.exec("container system status");
+    return exec("system status");
   }
 
   export function startService() {
-    return CLI.exec("container system start");
+    return exec("system start");
   }
 
   export function stopService() {
-    return CLI.exec("container system stop");
+    return exec("system stop");
+  }
+
+  export function listImages() {
+    return execAndList<ContainerImage>("images ls --verbose");
+  }
+
+  export function inspectImage(image: ContainerImage) {
+    return exec(`images inspect ${fullImageName(image)}`);
+  }
+
+  export function pullImage(image: string) {
+    return exec(`images pull ${image}`);
+  }
+
+  export function deleteImage(image: ContainerImage) {
+    return exec(`images delete ${fullImageName(image)}`);
   }
 }
 
@@ -128,4 +147,8 @@ function camelize(name: string) {
 
 function isExecError(error: any): error is SpawnSyncReturns<Buffer> {
   return error && error.pid && error.stdout;
+}
+
+function fullImageName(image: ContainerImage) {
+  return `${image.name}${image.tag ? ':' + image.tag : ''}`;
 }

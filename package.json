@@ -28,39 +28,100 @@
   "contributes": {
     "commands": [
       {
-        "command": "apple-container.startService",
-        "title": "%start.service%",
-				"icon": "$(debug-start)",
+        "command": "apple-container.system.refresh",
+        "title": "%refresh%",
+        "icon": "$(refresh)",
         "category": "Apple Container"
       },
       {
-        "command": "apple-container.stopService",
+        "command": "apple-container.system.start",
+        "title": "%start.service%",
+        "icon": "$(debug-start)",
+        "category": "Apple Container"
+      },
+      {
+        "command": "apple-container.system.stop",
         "title": "%stop.service%",
-				"icon": "$(debug-stop)",
+        "icon": "$(debug-stop)",
+        "category": "Apple Container"
+      },
+      {
+        "command": "apple-container.images.refresh",
+        "title": "%refresh%",
+        "icon": "$(refresh)",
+        "category": "Apple Container"
+      },
+      {
+        "command": "apple-container.images.pull",
+        "title": "%pull.image%",
+        "icon": "$(cloud-download)",
+        "category": "Apple Container"
+      },
+      {
+        "command": "apple-container.images.delete",
+        "title": "%delete%",
         "category": "Apple Container"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "apple-container.startService",
+          "command": "apple-container.system.refresh",
           "when": "never"
         },
         {
-          "command": "apple-container.stopService",
+          "command": "apple-container.system.start",
           "when": "never"
+        },
+        {
+          "command": "apple-container.system.stop",
+          "when": "never"
+        },
+        {
+          "command": "apple-container.images.refresh",
+          "when": "never"
+        },
+        {
+          "command": "apple-container.images.pull",
+          "when": "never"
+        },
+        {
+          "command": "apple-container.images.delete",
+          "when": "never"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "apple-container.system.refresh",
+          "when": "view === apple-container.system",
+          "group": "navigation@99"
+        },
+        {
+          "command": "apple-container.images.pull",
+          "when": "view === apple-container.images",
+          "group": "navigation@01"
+        },
+        {
+          "command": "apple-container.images.refresh",
+          "when": "view === apple-container.images",
+          "group": "navigation@99"
         }
       ],
       "view/item/context": [
         {
-          "command": "apple-container.startService",
+          "command": "apple-container.system.start",
           "when": "view === apple-container.system && viewItem === apple-container.statusNode.stopped",
           "group": "inline"
         },
         {
-          "command": "apple-container.stopService",
+          "command": "apple-container.system.stop",
           "when": "view === apple-container.system && viewItem === apple-container.statusNode.running",
           "group": "inline"
+        },
+        {
+          "command": "apple-container.images.delete",
+          "when": "view === apple-container.images && viewItem === apple-container.imageNode",
+          "group": "10images_01"
         }
       ]
     },
@@ -84,13 +145,13 @@
           "id": "apple-container.images",
           "name": "%images%",
           "icon": "",
-          "when": "apple-container.installed"
+          "when": "apple-container.running"
         },
         {
           "id": "apple-container.containers",
           "name": "%containers%",
           "icon": "",
-          "when": "apple-container.installed"
+          "when": "apple-container.running"
         }
       ]
     }
@@ -100,13 +161,16 @@
     "build": "webpack --mode development",
     "watch": "webpack --mode development --watch",
     "vscode:prepublish": "webpack --mode production --devtool hidden-source-map",
-    "package": "npx @vscode/vsce package --pre-release --target darwin-arm64"
+    "package": "npx @vscode/vsce package --pre-release --target darwin-arm64",
+    "test": "vscode-test"
   },
   "devDependencies": {
     "@types/node": "^22",
     "@types/vscode": "1.103",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
     "esbuild-loader": "4.3.0",
     "typescript": "5.9.2",
     "webpack": "5.101.3",

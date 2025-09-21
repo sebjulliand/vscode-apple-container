@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { ContainerCLI } from './core/cli';
+import { initializeImagesView } from './images/view';
 import { initializeSystemView } from './system/view';
 
 let extensionId = "";
@@ -14,10 +15,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const version = ContainerCLI.version();
 	output.appendLine(version.error || version.output);
-	const installed = version.code === 0;
+	const installed = version.succesful;
 	if (installed) {
 		containerVersion = /(\d+\.\d+\.\d+)/.exec(version.output)?.at(1) || "?";
 		setVSCodeContext('apple-container.installed', true);
+		initializeImagesView(context);
 	}
 
 	initializeSystemView(context);
@@ -38,7 +40,7 @@ export function getContainerVersion() {
 }
 
 export namespace Output {
-	export function appendLineAndThrow(message: string): never {
+	export function appendErrorAndThrow(message: string): never {
 		appendLine(vscode.l10n.t("[Error] {0}", message));
 		throw new Error(message);
 	}

@@ -1,7 +1,10 @@
 {
   "containers": "Containers",
-  "start.service" : "Start service",
-  "stop.service" : "Stop service",
+  "delete": "Delete",
   "images": "Images",
+  "pull.image": "Pull image",
+  "refresh": "Refresh",
+  "start.service": "Start service",
+  "stop.service": "Stop service",
   "system": "system"
 }

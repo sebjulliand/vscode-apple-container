@@ -1,7 +1,7 @@
 import vscode, { l10n } from "vscode";
 import { ContainerCLI } from "../core/cli";
 import { Node, NodeView } from "../core/nodeview";
-import { getContainerVersion } from "../extension";
+import { getContainerVersion, setVSCodeContext } from "../extension";
 
 export function initializeSystemView(context: vscode.ExtensionContext) {
   const systemView = new SystemView();
@@ -15,9 +15,10 @@ export function initializeSystemView(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     systemTreeView,
-    vscode.commands.registerCommand("apple-container.startService", () => {
+    vscode.commands.registerCommand("apple-container.system.refresh", () => systemView.refresh()),
+    vscode.commands.registerCommand("apple-container.system.start", () => {
       const start = ContainerCLI.startService();
-      if (start.code === 0) {
+      if (start.succesful) {
         vscode.window.showInformationMessage(l10n.t('Apple Container service successfully started.'));
       }
       else {
@@ -25,9 +26,9 @@ export function initializeSystemView(context: vscode.ExtensionContext) {
       }
       systemView.refresh();
     }),
-    vscode.commands.registerCommand("apple-container.stopService", () => {
+    vscode.commands.registerCommand("apple-container.system.stop", () => {
       const stop = ContainerCLI.stopService();
-      if (stop.code === 0) {
+      if (stop.succesful) {
         vscode.window.showInformationMessage(l10n.t('Apple Container service successfully stopped.'));
       }
       else {
@@ -41,8 +42,10 @@ export function initializeSystemView(context: vscode.ExtensionContext) {
 class SystemView extends NodeView {
   async getRoot() {
     if (getContainerVersion()) {
+      const status = ContainerCLI.status();
+      setVSCodeContext('apple-container.running', status.succesful);
       return [
-        new StatusNode()
+        new StatusNode(status.succesful, status.error || status.output)
       ];
     }
     else {
@@ -52,9 +55,7 @@ class SystemView extends NodeView {
 }
 
 class StatusNode extends Node {
-  constructor() {
-    const result = ContainerCLI.status();
-    const running = result.code === 0;
+  constructor(running: boolean, tooltip: string) {
     super(l10n.t('Status'), {
       state: vscode.TreeItemCollapsibleState.None,
       icon: running ? 'pass' : 'error',
@@ -62,6 +63,6 @@ class StatusNode extends Node {
     });
     this.contextValue = `apple-container.statusNode.${running ? 'running' : 'stopped'}`;
     this.description = running ? l10n.t("Running") : l10n.t("Stopped");
-    this.tooltip = result.output;
+    this.tooltip = tooltip;
   }
 }
