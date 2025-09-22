@@ -6,5 +6,6 @@
   "refresh": "Refresh",
   "start.service": "Start service",
   "stop.service": "Stop service",
-  "system": "system"
+  "system": "system",
+  "set.default":"Set default"
 }

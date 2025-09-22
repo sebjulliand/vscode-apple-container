@@ -35,6 +35,28 @@ export function initializeSystemView(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage(l10n.t('Failed to stop Apple Container service: {0)', stop.output));
       }
       systemView.refresh();
+    }),
+    vscode.commands.registerCommand("apple-container.system.dns.delete", async (node: DNSNode) => {
+      const dns = node.dns;
+      if (await vscode.window.showInformationMessage(l10n.t(`Are you sure you want to delete the DNS domain '{0}'?`, dns), { modal: true }, l10n.t('Yes'))) {
+        const result = ContainerCLI.deleteDNS(dns);
+        if (result.succesful) {
+          node.parent?.refresh?.();
+        }
+        else {
+          vscode.window.showErrorMessage(l10n.t("Failed to delete DNS domain '{0}': {1}", dns, result.output));
+        }
+      }
+    }),
+    vscode.commands.registerCommand("apple-container.system.dns.setDefault", (node: DNSNode) => {
+      const dns = node.dns;
+      const result = ContainerCLI.setDefaultDNS(dns);
+      if (result.succesful) {
+        node.parent?.refresh?.();
+      }
+      else {
+        vscode.window.showErrorMessage(l10n.t("Failed to change default DNS domain: {0}", result.output));
+      }
     })
   );
 }
@@ -87,8 +109,8 @@ class DNSDomainsNode extends Node {
 }
 
 class DNSNode extends Node {
-  constructor(dns: string, isDefault: boolean) {
-    super(dns, { icon: isDefault ? 'star' : undefined, color: isDefault ? 'charts.yellow' : undefined });
-    this.contextValue = 'apple-container.dnsNode';
+  constructor(readonly dns: string, isDefault: boolean) {
+    super(dns, { icon: isDefault ? 'star-full' : undefined, color: isDefault ? 'charts.yellow' : undefined });
+    this.contextValue = `apple-container.dnsNode${isDefault ? ".default" : ""}`;
   }
 }

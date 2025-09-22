@@ -62,6 +62,16 @@
         "command": "apple-container.images.delete",
         "title": "%delete%",
         "category": "Apple Container"
+      },
+      {
+        "command": "apple-container.system.dns.delete",
+        "title": "%delete%",
+        "category": "Apple Container"
+      },
+      {
+        "command": "apple-container.system.dns.setDefault",
+        "title": "%set.default%",
+        "category": "Apple Container"
       }
     ],
     "menus": {
@@ -88,6 +98,14 @@
         },
         {
           "command": "apple-container.images.delete",
+          "when": "never"
+        },
+        {
+          "command": "apple-container.system.dns.setDefault",
+          "when": "never"        
+        },
+        {
+          "command": "apple-container.system.dns.delete",
           "when": "never"
         }
       ],
@@ -118,6 +136,16 @@
           "command": "apple-container.system.stop",
           "when": "view === apple-container.system && viewItem === apple-container.statusNode.running",
           "group": "inline"
+        },
+        {
+          "command": "apple-container.system.dns.setDefault",
+          "when": "view === apple-container.system && viewItem === apple-container.dnsNode",
+          "group": "01dns_01"
+        },
+        {
+          "command": "apple-container.system.dns.delete",
+          "when": "view === apple-container.system && viewItem =~ /^apple-container.dnsNode/",
+          "group": "10dns_01"
         },
         {
           "command": "apple-container.images.delete",

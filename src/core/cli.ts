@@ -12,9 +12,9 @@ export namespace CLI {
    * @param command The command to run, with space-separated arguments.
    * @returns the standard output
    */
-  export function exec(command: string): ExecResult {
+  export function exec(command: string, sudo?: boolean): ExecResult {
     try {
-      return { code: 0, succesful: true, output: execSync(command).toString("utf-8")};
+      return { code: 0, succesful: true, output: execSync(`${sudo ? `echo ${getRootPassword()} | sudo -S ` : ''}${command}`).toString("utf-8") };
     }
     catch (err: any) {
       if (isExecError(err)) {
@@ -86,7 +86,10 @@ export namespace CLI {
 
       }
     }
+  }
 
+  function getRootPassword(){
+    
   }
 }
 
@@ -119,8 +122,12 @@ export namespace ContainerCLI {
     return exec(`system dns default set ${dns}`);
   }
 
-  export function cleqrDefaultDNS() {
+  export function clearDefaultDNS() {
     return exec(`system dns default clear`);
+  }
+
+  export function deleteDNS(dns: string) {
+    return exec(`system dns delete ${dns}`);
   }
 
   export function startService() {
