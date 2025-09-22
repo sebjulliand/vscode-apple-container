@@ -1,5 +1,5 @@
 import { execSync, SpawnSyncReturns } from "child_process";
-import { l10n } from "vscode";
+import { l10n, window } from "vscode";
 import { Output } from "../extension";
 import { Container, ContainerImage, ExecResult } from "../types";
 import { fullImageName } from "./utils";
@@ -12,9 +12,9 @@ export namespace CLI {
    * @param command The command to run, with space-separated arguments.
    * @returns the standard output
    */
-  export function exec(command: string, sudo?: boolean): ExecResult {
+  export function exec(command: string): ExecResult {
     try {
-      return { code: 0, succesful: true, output: execSync(`${sudo ? `echo ${getRootPassword()} | sudo -S ` : ''}${command}`).toString("utf-8") };
+      return { code: 0, succesful: true, output: execSync(command).toString("utf-8") };
     }
     catch (err: any) {
       if (isExecError(err)) {
@@ -29,6 +29,13 @@ export namespace CLI {
       else {
         Output.appendErrorAndThrow(l10n.t("'{0}' failed: {1}", command, typeof err === "string" ? err : JSON.stringify(err)));
       };
+    }
+  }
+
+  export async function execSudo(command: string) {
+    const password = await getSudoPassword();
+    if (password) {
+      return exec(`echo ${password} | sudo -S ${command}`);
     }
   }
 
@@ -88,8 +95,12 @@ export namespace CLI {
     }
   }
 
-  function getRootPassword(){
-    
+  async function getSudoPassword() {
+    return await window.showInputBox({
+      password: true,
+      prompt: l10n.t('Enter administrator password'),
+      placeHolder: l10n.t('sudo password'),
+    });
   }
 }
 
@@ -126,8 +137,12 @@ export namespace ContainerCLI {
     return exec(`system dns default clear`);
   }
 
-  export function deleteDNS(dns: string) {
-    return exec(`system dns delete ${dns}`);
+  export async function createDNS(dns: string) {
+    return CLI.execSudo(`container system dns create ${dns}`);
+  }
+
+  export async function deleteDNS(dns: string) {
+    return CLI.execSudo(`container system dns delete ${dns}`);
   }
 
   export function startService() {

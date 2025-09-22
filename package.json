@@ -64,6 +64,12 @@
         "category": "Apple Container"
       },
       {
+        "command": "apple-container.system.dns.create",
+        "title": "%create.dns%",
+        "icon": "$(add)",
+        "category": "Apple Container"
+      },
+      {
         "command": "apple-container.system.dns.delete",
         "title": "%delete%",
         "category": "Apple Container"
@@ -102,7 +108,11 @@
         },
         {
           "command": "apple-container.system.dns.setDefault",
-          "when": "never"        
+          "when": "never"
+        },
+        {
+          "command": "apple-container.system.dns.create",
+          "when": "never"
         },
         {
           "command": "apple-container.system.dns.delete",
@@ -140,17 +150,22 @@
         {
           "command": "apple-container.system.dns.setDefault",
           "when": "view === apple-container.system && viewItem === apple-container.dnsNode",
-          "group": "01dns_01"
+          "group": "01dns@01"
+        },
+        {
+          "command": "apple-container.system.dns.create",
+          "when": "view === apple-container.system && viewItem === apple-container.dnsDomainsNode",
+          "group": "inline@01"
         },
         {
           "command": "apple-container.system.dns.delete",
           "when": "view === apple-container.system && viewItem =~ /^apple-container.dnsNode/",
-          "group": "10dns_01"
+          "group": "10dns@01"
         },
         {
           "command": "apple-container.images.delete",
           "when": "view === apple-container.images && viewItem === apple-container.imageNode",
-          "group": "10images_01"
+          "group": "10images@01"
         }
       ]
     },

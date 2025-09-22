@@ -13,8 +13,6 @@ export function initializeImagesView(context: vscode.ExtensionContext) {
     canSelectMany: true
   });
 
-  imagesTreeView.badge = { tooltip: '', value: 3 };
-
   context.subscriptions.push(
     imagesTreeView,
     vscode.commands.registerCommand("apple-container.images.refresh", () => imagesView.refresh()),

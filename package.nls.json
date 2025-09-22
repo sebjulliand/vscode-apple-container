@@ -1,6 +1,7 @@
 {
   "containers": "Containers",
   "delete": "Delete",
+  "create.dns":"Create DNS domain",
   "images": "Images",
   "pull.image": "Pull image",
   "refresh": "Refresh",
