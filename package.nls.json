@@ -4,6 +4,7 @@
   "create.dns":"Create DNS domain",
   "images": "Images",
   "pull.image": "Pull image",
+  "prune.images": "Prune images",
   "refresh": "Refresh",
   "start.service": "Start service",
   "stop.service": "Stop service",

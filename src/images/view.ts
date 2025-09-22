@@ -30,6 +30,18 @@ export function initializeImagesView(context: vscode.ExtensionContext) {
         }
       }
     }),
+    vscode.commands.registerCommand("apple-container.images.prune", async () => {
+      if (await vscode.window.showInformationMessage(l10n.t(`Are you sure you want to remove unreferenced and dangling images?`), { modal: true }, l10n.t('Yes'))) {
+        const result = ContainerCLI.pruneImages();
+        if (result.succesful) {
+          vscode.window.showInformationMessage(result.output.split('\n').join('; '));
+          imagesView.refresh();
+        }
+        else {
+          vscode.window.showErrorMessage(l10n.t("Failed to prune images: {0}", result.output));
+        }
+      }
+    }),
     vscode.commands.registerCommand("apple-container.images.delete", async (node: ImageNode, nodes?: ImageNode[]) => {
       const images = (nodes || [node]).map(n => n.image);
       const detail = images.map(image => `- ${fullImageName(image)}`).join('\n');

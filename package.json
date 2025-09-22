@@ -53,6 +53,12 @@
         "category": "Apple Container"
       },
       {
+        "command": "apple-container.images.prune",
+        "title": "%prune.images%",
+        "icon": "$(clear-all)",
+        "category": "Apple Container"
+      },
+      {
         "command": "apple-container.images.pull",
         "title": "%pull.image%",
         "icon": "$(cloud-download)",
@@ -103,6 +109,10 @@
           "when": "never"
         },
         {
+          "command": "apple-container.images.prune",
+          "when": "never"
+        },
+        {
           "command": "apple-container.images.delete",
           "when": "never"
         },
@@ -129,6 +139,11 @@
           "command": "apple-container.images.pull",
           "when": "view === apple-container.images",
           "group": "navigation@01"
+        },
+        {
+          "command": "apple-container.images.prune",
+          "when": "view === apple-container.images",
+          "group": "navigation@10"
         },
         {
           "command": "apple-container.images.refresh",

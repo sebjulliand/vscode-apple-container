@@ -169,6 +169,10 @@ export namespace ContainerCLI {
     return exec(`images delete ${fullImageName(image)}`);
   }
 
+  export function pruneImages() {
+    return exec(`images prune`);
+  }
+
   export function listContainers() {
     return execAndList<Container>("ls --all");
   }
