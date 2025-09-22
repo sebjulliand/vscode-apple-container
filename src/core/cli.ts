@@ -17,6 +17,10 @@ export namespace CLI {
       return { code: 0, succesful: true, output: execSync(command).toString("utf-8") };
     }
     catch (err: any) {
+      const sudo = command.indexOf('sudo -S ');
+      if (sudo > -1) {
+        command = command.substring(sudo);
+      }
       if (isExecError(err)) {
         Output.appendLine(l10n.t("'{0}' failed: [{1}] {2}", command, err.status || "?", err.stderr.toString("utf-8")));
 
