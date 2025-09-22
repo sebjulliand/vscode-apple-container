@@ -22,7 +22,7 @@ export function initializeSystemView(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(l10n.t('Apple Container service successfully started.'));
       }
       else {
-        vscode.window.showErrorMessage(l10n.t('Failed to start Apple Container service: {0)', start.error || start.output));
+        vscode.window.showErrorMessage(l10n.t('Failed to start Apple Container service: {0)', start.output));
       }
       systemView.refresh();
     }),
@@ -32,7 +32,7 @@ export function initializeSystemView(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(l10n.t('Apple Container service successfully stopped.'));
       }
       else {
-        vscode.window.showErrorMessage(l10n.t('Failed to stop Apple Container service: {0)', stop.error || stop.output));
+        vscode.window.showErrorMessage(l10n.t('Failed to stop Apple Container service: {0)', stop.output));
       }
       systemView.refresh();
     })
@@ -45,7 +45,7 @@ class SystemView extends NodeView {
       const status = ContainerCLI.status();
       setVSCodeContext('apple-container.running', status.succesful);
       return [
-        new StatusNode(status.succesful, status.error || status.output),
+        new StatusNode(status.succesful, status.output),
         new DNSDomainsNode()
       ];
     }

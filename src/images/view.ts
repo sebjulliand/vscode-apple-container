@@ -45,7 +45,7 @@ export function initializeImagesView(context: vscode.ExtensionContext) {
               imagesView.refresh();
             }
             else {
-              vscode.window.showErrorMessage(l10n.t('Failed to delete image: {0}', result.error || result.output));
+              vscode.window.showErrorMessage(l10n.t('Failed to delete image: {0}', result.output));
             }
             task.report({ message: fullImageName(image), increment });
           }

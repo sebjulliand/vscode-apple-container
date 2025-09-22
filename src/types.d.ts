@@ -1,3 +1,9 @@
+export type ExecResult = {
+  succesful: boolean
+  code: number
+  output: string
+}
+
 export type ContainerImage = {
   name: string
   tag: string

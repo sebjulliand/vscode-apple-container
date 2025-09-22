@@ -1,15 +1,8 @@
 import { execSync, SpawnSyncReturns } from "child_process";
 import { l10n } from "vscode";
 import { Output } from "../extension";
-import { Container, ContainerImage } from "../types";
+import { Container, ContainerImage, ExecResult } from "../types";
 import { fullImageName } from "./utils";
-
-type ExecResult = {
-  succesful: boolean
-  code: number
-  output: string
-  error: string
-};
 
 export namespace CLI {
   /**
@@ -21,18 +14,16 @@ export namespace CLI {
    */
   export function exec(command: string): ExecResult {
     try {
-      return { code: 0, succesful: true, output: execSync(command).toString("utf-8"), error: '' };
+      return { code: 0, succesful: true, output: execSync(command).toString("utf-8")};
     }
     catch (err: any) {
-      let error;
       if (isExecError(err)) {
         Output.appendLine(l10n.t("'{0}' failed: [{1}] {2}", command, err.status || "?", err.stderr.toString("utf-8")));
 
         return {
           succesful: false,
           code: err.status || -666,
-          output: err.stdout.toString("utf-8"),
-          error: err.stderr.toString("utf-8")
+          output: `${err.stderr.toString("utf-8")}\n${err.stdout.toString("utf-8")}`.trim()
         };
       }
       else {
@@ -91,7 +82,7 @@ export namespace CLI {
         Output.appendErrorAndThrow(l10n.t("Command {0} is not a list command", command));
       }
       else {
-        Output.appendErrorAndThrow(l10n.t("Command {0} failed: (1}", command, execResult.error || execResult.output));
+        Output.appendErrorAndThrow(l10n.t("Command {0} failed: (1}", command, execResult.output));
 
       }
     }

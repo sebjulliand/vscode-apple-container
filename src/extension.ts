@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	const version = ContainerCLI.version();
-	output.appendLine(version.error || version.output);
+	output.appendLine(version.output);
 	const installed = version.succesful;
 	if (installed) {
 		containerVersion = /(\d+\.\d+\.\d+)/.exec(version.output)?.at(1) || "?";
