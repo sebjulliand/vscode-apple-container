@@ -4,6 +4,7 @@
   "displayName": "Apple Container",
   "description": "Manage Apple Container from VS Code",
   "version": "0.0.1",
+  "icon": "icons/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/sebjulliand/vscode-apple-container"
@@ -162,21 +163,22 @@
     "watch": "webpack --mode development --watch",
     "vscode:prepublish": "webpack --mode production --devtool hidden-source-map",
     "package": "npx @vscode/vsce package --pre-release --target darwin-arm64",
-    "test": "vscode-test"
+    "test": "vscode-test --require ts-node/register"
   },
   "devDependencies": {
     "@types/node": "^22",
+    "@types/sinon": "^17.0.4",
     "@types/vscode": "1.103",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "@vscode-elements/elements": "^2.3.1",
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
     "esbuild-loader": "4.3.0",
+    "sinon": "^21.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "5.9.2",
     "webpack": "5.101.3",
     "webpack-cli": "6.0.1"
-  },
-  "dependencies": {
-    "@vscode-elements/elements": "^2.3.1"
   }
 }
