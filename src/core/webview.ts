@@ -1,5 +1,24 @@
 import vscode from "vscode";
 
+export interface WebviewAction {
+	action: string
+};
+
+export interface WebviewListAction extends WebviewAction {
+	action: string
+	contentIndex: number
+};
+
+export interface WebviewFormAction extends WebviewAction {
+	action: string
+	form: Record<string, string | string[]>
+};
+
+export type WebviewUpdateAction = {
+	data: Record<string, string | string[]>
+	invalid?: boolean
+};
+
 const webviews: Map<string, Webview> = new Map();
 
 export abstract class Webview {
@@ -52,14 +71,44 @@ export abstract class Webview {
 		return /*html*/ `<meta charset="UTF-8">
 			<meta name="viewport" content = "width=device-width, initial-scale=1.0">			
 			<script type="module" src="${webview.asWebviewUri(vscode.Uri.parse("dist/vscode-elements.js"))}"></script>
-			<link href="${webview.asWebviewUri(vscode.Uri.parse("static/style.css"))}" rel="stylesheet">
+			<link href="${webview.asWebviewUri(vscode.Uri.parse("webview/style.css"))}" rel="stylesheet">
+			<script src="${webview.asWebviewUri(vscode.Uri.parse("webview/vscode-api.js"))}"></script>
 			${this.title ? `<title>${this.title}</title>` : ''}`;
 	}
 
 	protected handleWebviewMessage(message: any) {
-		if (message) {
-			//TODO
+		if (message && message.type) {
+			switch (message.type) {
+				case "WebviewListAction":
+					this.processWebviewListAction(message);
+					break;
+				case "WebviewFormAction":
+					this.processWebviewFormAction(message);
+					break;
+				case "WebviewUpdateAction":
+					this.processWebviewUpdateAction(message);
+					break;
+				default:
+					this.processWebviewAction(message);
+					break;
+			}
 		}
+	}
+
+	protected processWebviewAction(action: WebviewAction) {
+		//Override to process actions
+	}
+
+	protected processWebviewListAction(action: WebviewListAction) {
+		//Override to process list actions
+	}
+
+	protected processWebviewFormAction(action: WebviewFormAction) {
+		//Override to process form actions
+	}
+
+	protected processWebviewUpdateAction(action: WebviewUpdateAction) {
+		//Override to process form actions
 	}
 
 	/**
