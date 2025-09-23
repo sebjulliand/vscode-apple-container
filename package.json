@@ -14,7 +14,7 @@
     "url": "https://github.com/sebjulliand"
   },
   "engines": {
-    "vscode": "^1.103.x"
+    "vscode": "^1.103.0"
   },
   "extensionDependencies": [],
   "license": "MIT",
