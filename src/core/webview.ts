@@ -19,9 +19,15 @@ export type WebviewUpdateAction = {
 	invalid?: boolean
 };
 
-const webviews: Map<string, Webview> = new Map();
+const webviews: Map<string, CustomWebview> = new Map();
 
-export abstract class Webview {
+export abstract class CustomWebview {
+	private static root: vscode.Uri;
+	static initialize(context: vscode.ExtensionContext) {
+		CustomWebview.root = context.extensionUri;
+
+	}
+
 	private readonly panel: vscode.WebviewPanel;
 	constructor(type: string, readonly title: string, readonly column: vscode.ViewColumn = vscode.ViewColumn.One) {
 		this.panel = vscode.window.createWebviewPanel(type, this.title, column, {
@@ -70,9 +76,9 @@ export abstract class Webview {
 	private getWebviewHead(webview: vscode.Webview): string {
 		return /*html*/ `<meta charset="UTF-8">
 			<meta name="viewport" content = "width=device-width, initial-scale=1.0">			
-			<script type="module" src="${webview.asWebviewUri(vscode.Uri.parse("dist/vscode-elements.js"))}"></script>
-			<link href="${webview.asWebviewUri(vscode.Uri.parse("webview/style.css"))}" rel="stylesheet">
-			<script src="${webview.asWebviewUri(vscode.Uri.parse("webview/vscode-api.js"))}"></script>
+			<script type="module" src="${webview.asWebviewUri(vscode.Uri.joinPath(CustomWebview.root, "dist", "vscode-elements.js"))}"></script>
+			<link href="${webview.asWebviewUri(vscode.Uri.joinPath(CustomWebview.root, "webview", "style.css"))}" rel="stylesheet">
+			<script src="${webview.asWebviewUri(vscode.Uri.joinPath(CustomWebview.root, "webview", "vscode-api.js"))}"></script>
 			${this.title ? `<title>${this.title}</title>` : ''}`;
 	}
 
@@ -131,7 +137,7 @@ export abstract class Webview {
 	}
 }
 
-export function openWebview(title: string, panelProvider: (title: string) => Webview, forceReopen?: boolean) {
+export function openWebview(title: string, panelProvider: (title: string) => CustomWebview, forceReopen?: boolean) {
 	const openPanel = webviews.get(title);
 	if (openPanel) {
 		if (forceReopen) {

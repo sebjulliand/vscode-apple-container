@@ -369,7 +369,7 @@ export namespace Form {
         document.getElementById('${id}').addEventListener('click', () => {
           const form = document.querySelector('#${formId}');
           ${requiresValidInput ? `if(!document.querySelector(":invalid"))` : ''}
-          sendWebviewFormAction("${id}", form.data);
+          sendWebviewFormAction("${id}", form);
         });
       </script>`
     };

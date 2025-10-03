@@ -1,7 +1,7 @@
 {
   "containers": "Containers",
   "delete": "Delete",
-  "create.dns":"Create DNS domain",
+  "create.dns": "Create DNS domain",
   "images": "Images",
   "pull.image": "Pull image",
   "prune.images": "Prune images",
@@ -9,5 +9,6 @@
   "start.service": "Start service",
   "stop.service": "Stop service",
   "system": "system",
-  "set.default":"Set default"
+  "set.default": "Set default",
+  "create.container": "Create container"
 }

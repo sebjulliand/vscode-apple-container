@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { ContainerCLI } from './core/cli';
+import { CustomWebview } from './core/webview';
 import { initializeImagesView } from './images/view';
 import { initializeSystemView } from './system/view';
 
@@ -23,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	initializeSystemView(context);
-
+	CustomWebview.initialize(context);
 	console.log(vscode.l10n.t(`{0} version {1} activated`, extensionId, context.extension.packageJSON.version));
 }
 

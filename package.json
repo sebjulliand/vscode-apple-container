@@ -70,6 +70,11 @@
         "category": "Apple Container"
       },
       {
+        "command": "apple-container.container.create",
+        "title": "%create.container%",
+        "category": "Apple Container"
+      },
+      {
         "command": "apple-container.system.dns.create",
         "title": "%create.dns%",
         "icon": "$(add)",
@@ -114,6 +119,10 @@
         },
         {
           "command": "apple-container.images.delete",
+          "when": "never"
+        },
+        {
+          "command": "apple-container.container.create",
           "when": "never"
         },
         {
@@ -176,6 +185,11 @@
           "command": "apple-container.system.dns.delete",
           "when": "view === apple-container.system && viewItem =~ /^apple-container.dnsNode/",
           "group": "10dns@01"
+        },
+        {
+          "command": "apple-container.container.create",
+          "when": "view === apple-container.images && viewItem === apple-container.imageNode && !listMultiSelection",
+          "group": "01images@01"
         },
         {
           "command": "apple-container.images.delete",

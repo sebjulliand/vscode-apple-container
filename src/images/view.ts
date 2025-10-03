@@ -1,8 +1,10 @@
 import vscode, { l10n } from "vscode";
+import { openCreateContainerPanel } from "../containers/create";
 import { ContainerCLI } from "../core/cli";
 import { Node, NodeView } from "../core/nodeview";
 import { fullImageName } from "../core/utils";
 import { ContainerImage } from "../types";
+import { openInspectPanel } from "./inspect";
 
 export function initializeImagesView(context: vscode.ExtensionContext) {
   const imagesView = new ImagesView();
@@ -30,6 +32,9 @@ export function initializeImagesView(context: vscode.ExtensionContext) {
         }
       }
     }),
+    vscode.commands.registerCommand("apple-container.images.inspect", async (node: ImageNode) => {
+      openInspectPanel(node.image);
+    }),
     vscode.commands.registerCommand("apple-container.images.prune", async () => {
       if (await vscode.window.showInformationMessage(l10n.t(`Are you sure you want to remove unreferenced and dangling images?`), { modal: true }, l10n.t('Yes'))) {
         const result = ContainerCLI.pruneImages();
@@ -41,6 +46,9 @@ export function initializeImagesView(context: vscode.ExtensionContext) {
           vscode.window.showErrorMessage(l10n.t("Failed to prune images: {0}", result.output));
         }
       }
+    }),
+    vscode.commands.registerCommand("apple-container.container.create", async (node: ImageNode) => {
+      openCreateContainerPanel(node.image);
     }),
     vscode.commands.registerCommand("apple-container.images.delete", async (node: ImageNode, nodes?: ImageNode[]) => {
       const images = (nodes || [node]).map(n => n.image);
@@ -77,5 +85,11 @@ class ImageNode extends Node {
     this.contextValue = `apple-container.imageNode`;
     this.description = image.tag;
     this.tooltip = image.size;
+
+    this.command = {
+      title: l10n.t('Inspect image'),
+      command: "apple-container.images.inspect",
+      arguments: [this]
+    };
   }
 }
